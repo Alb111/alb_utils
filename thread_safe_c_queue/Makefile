@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Source files and objects
-SRC = queue.c
+SRC = main.c queue.c
 OBJ = $(SRC:.c=.o)
 
 # Final executable
