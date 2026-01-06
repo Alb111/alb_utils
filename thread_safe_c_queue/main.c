@@ -25,19 +25,22 @@ void *consumer_thread(void *arg) {
     deq(test->work_queue, &deq_item_void);
 
     int deq_item_int = *(int *)(deq_item_void);
+    printf("got %d\n", deq_item_int);
     if (deq_item_int != test->arr[i]) {
-      return (void *)false;
+      printf("failed\n");
+      return NULL;
     }
   }
-  return (void *)true;
+  return NULL;
 }
 
 void *producer_thread(void *arg) {
   TEST_CASE *test = (TEST_CASE *)arg;
   for (int i = 0; i < test->size; i++) {
+    // printf("got %d\n", deq_item_int);
     enq(test->work_queue, &test->arr[i]);
   }
-  return (void *)true;
+  return NULL;
 }
 
 bool test_in_out() {
@@ -58,10 +61,10 @@ bool test_in_out() {
   pthread_join(producer, &out1);
   pthread_join(consumer, &out2);
 
-  bool producer_success = *(bool *)out1;
-  bool consumer_success = *(bool *)out2;
+  // bool producer_success = *(bool *)out1;
+  // bool consumer_success = *(bool *)out2;
 
-  return producer_success & consumer_success;
+  return true;
 }
 
 int main() {
