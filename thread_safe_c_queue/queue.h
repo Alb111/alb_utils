@@ -20,12 +20,15 @@
  * @warning The queue does not manage the memory of stored items
 */
 typedef struct {
-  int tail;
-  int head;
-  void *queue_data;
-  pthread_mutex_t mutex;
-  pthread_cond_t cond;
+  int tail; /**< Index to write to */
+  int head; /**< Index to read from */
+  void **queue_data; /**< arr of void pointers */
+  pthread_mutex_t mutex; /**< mutex which thread will compete for */
+  pthread_cond_t not_full; /**< condition signaling if queue_data is not full */
+  pthread_cond_t not_empty; /**< condition signaling if queue_data is not empty */
+  int size; /** size of queue_data used to malloc space */ 
 } QUEUE;
+
 
 /**
  * @brief allocates memory strucuture to hold data in QUEUE
@@ -35,12 +38,24 @@ typedef struct {
  * inits the mutexes and conditions for thread sync
  *
  * @param[in] size_of_queue: the size of queue 
- * @param[in] size_of_queue_item: the size of queue 
  * @return pointer to new QUEUE on success, null on failure
  * @warning make sure to check if fill pointer returned is valid
  *
 */
-QUEUE *create_queue(int size_of_queue, size_t size_of_queue_item);
+QUEUE *create_queue(int size_of_queue);
 
-// bool enq(QUEUE *queue, void *item_to_enq);
-// bool deq(QUEUE *queue, void *deq_item);
+
+/**
+ * @brief pushes a data into the queue
+ * 
+ * if queue isn't in use and isn't full data is enqueued 
+ * otherwise this function will block until the prior is met 
+ *
+ * @param[in] queue: the queue to do work on 
+ * @param[in] item_to_enq: the item to add to queue 
+ * @return nothing
+ * @warning currently enq has no timeout, can infinite block
+ *
+*/
+void enq(QUEUE *queue, void *item_dequeued);
+void deq(QUEUE *queue, void **item_dequeued); 
