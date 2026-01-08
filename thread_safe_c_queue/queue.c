@@ -4,6 +4,13 @@
 #include <string.h>
 
 QUEUE *create_queue(int size_of_queue) {
+  // head tail pointer require size to be greater than 1
+  if (size_of_queue <= 1){
+    fprintf(stderr, "Error: queue size must be greater than one\n");
+    return NULL;
+  }
+
+  
   // try to allocate space
   QUEUE *q = calloc(1, sizeof(QUEUE));
   if (!q) {
@@ -45,6 +52,7 @@ void enq(QUEUE *queue, void *item_to_enq) {
   pthread_mutex_lock(&(queue->mutex));
   int tail_plus_one = ((queue->tail + 1) % queue->size);
   while (tail_plus_one == queue->head) {
+    // printf("waiting for deq\n");
     pthread_cond_wait(&(queue->not_full), &(queue->mutex));
   }
   queue->queue_data[queue->tail] = item_to_enq;
@@ -61,6 +69,7 @@ void deq(QUEUE *queue, void **item_dequeued) {
   pthread_mutex_lock(&(queue->mutex));
   int head_plus_one = ((queue->head + 1) % queue->size);
   while (queue->tail == queue->head) {
+    // printf("waiting for enq\n");
     pthread_cond_wait(&(queue->not_empty), &(queue->mutex));
   }
   *item_dequeued = queue->queue_data[queue->head];

@@ -17,7 +17,7 @@
  * A thread safe queue structure that stores void pointers
  * It uses a circular buffer and stuff provided by POSIX
  * 
- * @warning The queue does not manage the memory of stored items
+ * @warning The queue does not manage the memory of stored items, simple the void pointer to them
 */
 typedef struct {
   int tail; /**< Index to write to */
@@ -40,6 +40,7 @@ typedef struct {
  * @param[in] size_of_queue: the size of queue 
  * @return pointer to new QUEUE on success, null on failure
  * @warning make sure to check if fill pointer returned is valid
+ * @warning size of queue must be greater than 1
  *
 */
 QUEUE *create_queue(int size_of_queue);
@@ -54,6 +55,7 @@ QUEUE *create_queue(int size_of_queue);
  * @param[in] queue: the queue to do work on 
  * @param[in] item_to_enq: the item to add to queue 
  * @return nothing
+ * @warning 
  * @warning currently enq has no timeout, can infinite block
  *
 */
