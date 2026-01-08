@@ -58,4 +58,6 @@ QUEUE *create_queue(int size_of_queue);
  *
 */
 void enq(QUEUE *queue, void *item_dequeued);
+
+//TOOD
 void deq(QUEUE *queue, void **item_dequeued); 
